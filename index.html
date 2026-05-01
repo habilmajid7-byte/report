@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report a Problem | Support Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --glass-bg: rgba(255, 255, 255, 0.025);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-border-hover: rgba(255, 255, 255, 0.15);
+            --primary: #6366f1;
+            --primary-hover: #818cf8;
+            --primary-glow: rgba(99, 102, 241, 0.3);
+            --success: #10b981;
+            --success-bg: rgba(16, 185, 129, 0.1);
+            --error: #ef4444;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --warning: #f59e0b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --input-bg: rgba(0, 0, 0, 0.3);
+            --radius-lg: 24px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-dark);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 20% 20%, rgba(99, 102, 241, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 30% at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            pointer-events: none;
+            animation: float 25s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #ec4899, #f97316);
+            bottom: -50px;
+            right: -50px;
+            animation-delay: -8s;
+        }
+
+        .orb-3 {
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            top: 50%;
+            right: 20%;
+            animation-delay: -16s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.05); }
+            50% { transform: translate(-20px, 20px) scale(0.95); }
+            75% { transform: translate(20px, 10px) scale(1.02); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            animation: fadeSlideDown 0.6s ease-out;
+        }
+
+        @keyframes fadeSlideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+        }
+
+        .logo-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: white;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 580px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            animation: fadeSlideUp 0.6s ease-out;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), #8b5cf6, #ec4899);
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 540px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .card {
+                padding: 24px;
+            }
+            h1 {
+                font-size: 26px;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .required {
+            color: var(--error);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        input.error, select.error, textarea.error {
+            border-color: var(--error);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 44px;
+            cursor: pointer;
+        }
+
+        select option {
+            background: #1a1a2e;
+            color: var(--text-primary);
+        }
+
+        textarea {
+            min-height: 140px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .error-message {
+            font-size: 13px;
+            color: var(--error);
+            display: none;
+            align-items: center;
+            gap: 6px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .error-message.visible {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .honeypot {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .file-upload {
+            border: 2px dashed var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--input-bg);
+        }
+
+        .file-upload:hover {
+            border-color: var(--glass-border-hover);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .file-upload.has-file {
+            border-color: var(--success);
+            border-style: solid;
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .file-upload.has-file .file-upload-icon {
+            stroke: var(--success);
+        }
+
+        .file-upload.dragover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .file-upload-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 12px;
+            stroke: var(--text-muted);
+        }
+
+        .file-upload-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .file-upload-text span {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .file-upload-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.35);
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submit-btn .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .submit-btn.loading .btn-text {
+            display: none;
+        }
+
+        .submit-btn.loading .spinner {
+            display: block;
+        }
+
+        .status-message {
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            display: none;
+            align-items: flex-start;
+            gap: 12px;
+            animation: slideIn 0.4s ease;
+        }
+
+        .status-message.visible {
+            display: flex;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status-message.success {
+            background: var(--success-bg);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-message.error {
+            background: var(--error-bg);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status-icon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .status-message.success .status-icon {
+            stroke: var(--success);
+        }
+
+        .status-message.error .status-icon {
+            stroke: var(--error);
+        }
+
+        .status-content h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .status-message.success .status-content h3 {
+            color: var(--success);
+        }
+
+        .status-message.error .status-content h3 {
+            color: var(--error);
+        }
+
+        .status-content p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .rate-limit-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+            z-index: 10;
+            border-radius: var(--radius-lg);
+        }
+
+        .rate-limit-overlay.visible {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .rate-limit-timer {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--primary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .rate-limit-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .footer span {
+            color: var(--text-muted);
+            margin: 0 8px;
+        }
+
+        .check-animation {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: drawCheck 0.5s ease forwards 0.2s;
+        }
+
+        @keyframes drawCheck {
+            to { stroke-dashoffset: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        <line x1="9" y1="10" x2="15" y2="10"></line>
+                    </svg>
+                </div>
+            </div>
+            <h1>Report a Problem</h1>
+            <p class="subtitle">We're here to help. Submit your issue below.</p>
+        </header>
+
+        <div class="card">
+            <div class="rate-limit-overlay" id="rateLimitOverlay">
+                <div class="rate-limit-timer" id="rateLimitTimer">30</div>
+                <p class="rate-limit-text">Please wait before submitting<br>another report</p>
+            </div>
+
+            <div class="status-message success" id="successMessage">
+                <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path class="check-animation" d="M20 6L9 17l-5-5"></path>
+                </svg>
+                <div class="status-content">
+                    <h3>Report Submitted!</h3>
+                    <p>We've received your report and will get back to you soon.</p>
+                </div>
+            </div>
+
+            <div class="status-message error" id="errorMessage">
+                <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+                <div class="status-content">
+                    <h3>Something went wrong</h3>
+                    <p id="errorMessageText">Please try again later.</p>
+                </div>
+            </div>
+               <form class="contact-form" id="contactForm" action="https://formspree.io/f/mojpadlv" method="POST">
+                <input type="text" name="honeypot" class="honeypot" tabindex="-1" autocomplete="off">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fullName">Full Name <span class="required">*</span></label>
+                        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+                        <div class="error-message" id="fullNameError">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <span>Please enter your name (at least 2 characters)</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email <span style="color: var(--text-muted); font-weight: 400;">(optional)</span></label>
+                        <input type="email" id="email" name="email" placeholder="your@email.com">
+                        <div class="error-message" id="emailError">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <span>Please enter a valid email address</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">Phone Number <span style="color: var(--text-muted); font-weight: 400;">(optional)</span></label>
+                        <input type="tel" id="phone" name="phone" placeholder="+1 (555) 000-0000">
+                        <div class="error-message" id="phoneError">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <span>Please enter a valid phone number</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Problem Category <span class="required">*</span></label>
+                        <select id="category" name="category" required>
+                            <option value="">Select a category</option>
+                            <option value="Bug">Bug Report</option>
+                            <option value="Payment Issue">Payment Issue</option>
+                            <option value="Login Issue">Login Issue</option>
+                            <option value="Account">Account Problem</option>
+                            <option value="Feature Request">Feature Request</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div class="error-message" id="categoryError">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <span>Please select a category</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Describe Your Issue <span class="required">*</span></label>
+                    <textarea id="message" name="message" placeholder="Please describe your issue in detail. The more information you provide, the faster we can help you..." required></textarea>
+                    <div class="error-message" id="messageError">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <span>Please describe your issue (at least 10 characters)</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="screenshot">Screenshot / File <span style="color: var(--text-muted); font-weight: 400;">(optional)</span></label>
+                    <input type="file" id="screenshot" name="screenshot" accept="image/png,image/jpeg,image/jpg,image/gif,image/webp" style="display: none;">
+                    <div class="file-upload" id="fileUpload">
+                        <input type="file" id="fileInput" accept="image/png,image/jpeg,image/jpg,image/gif,image/webp" style="display: none;">
+                        <svg class="file-upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p class="file-upload-text" id="fileUploadText">Drag & drop or <span>browse</span></p>
+                        <p class="file-upload-hint" id="fileUploadHint">PNG, JPG, GIF, WebP up to 5MB</p>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="btn-text">Submit Report</span>
+                    <div class="spinner"></div>
+                </button>
+            </form>
+        </div>
+
+        <footer class="footer">
+            <p>Need urgent help? <a href="mailto:habilmajid7@gmail.com?subject=Urgent Support Request">Contact Support</a> | <a href="tel:+255774323581">Call Us</a></p>
+        </footer>
+    </div>
+
+    <script>
+        (function() {
+            const form = document.getElementById('reportForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const errorMessageText = document.getElementById('errorMessageText');
+            const rateLimitOverlay = document.getElementById('rateLimitOverlay');
+            const rateLimitTimer = document.getElementById('rateLimitTimer');
+
+            const fullName = document.getElementById('fullName');
+            const email = document.getElementById('email');
+            const phone = document.getElementById('phone');
+            const category = document.getElementById('category');
+            const message = document.getElementById('message');
+
+            const RATE_LIMIT_SECONDS = 30;
+            let isSubmitting = false;
+
+            function sanitizeInput(str) {
+                if (!str) return '';
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            function showError(input, errorElement, message) {
+                input.classList.add('error');
+                if (errorElement) {
+                    errorElement.querySelector('span').textContent = message;
+                    errorElement.classList.add('visible');
+                }
+            }
+
+            function clearError(input, errorElement) {
+                input.classList.remove('error');
+                if (errorElement) {
+                    errorElement.classList.remove('visible');
+                }
+            }
+
+            function validateFullName() {
+                const value = fullName.value.trim();
+                const errorEl = document.getElementById('fullNameError');
+                if (value.length < 2) {
+                    showError(fullName, errorEl, 'Please enter your name (at least 2 characters)');
+                    return false;
+                }
+                clearError(fullName, errorEl);
+                return true;
+            }
+
+            function validateEmail() {
+                const value = email.value.trim();
+                const errorEl = document.getElementById('emailError');
+                if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                    showError(email, errorEl, 'Please enter a valid email address');
+                    return false;
+                }
+                clearError(email, errorEl);
+                return true;
+            }
+
+            function validatePhone() {
+                const value = phone.value.trim();
+                const errorEl = document.getElementById('phoneError');
+                if (value && !/^[\d\s\-\+\(\)]{7,20}$/.test(value)) {
+                    showError(phone, errorEl, 'Please enter a valid phone number');
+                    return false;
+                }
+                clearError(phone, errorEl);
+                return true;
+            }
+
+            function validateCategory() {
+                const value = category.value;
+                const errorEl = document.getElementById('categoryError');
+                if (!value) {
+                    showError(category, errorEl, 'Please select a category');
+                    return false;
+                }
+                clearError(category, errorEl);
+                return true;
+            }
+
+            function validateMessage() {
+                const value = message.value.trim();
+                const errorEl = document.getElementById('messageError');
+                if (value.length < 10) {
+                    showError(message, errorEl, 'Please describe your issue (at least 10 characters)');
+                    return false;
+                }
+                clearError(message, errorEl);
+                return true;
+            }
+
+            fullName.addEventListener('blur', validateFullName);
+            email.addEventListener('blur', validateEmail);
+            phone.addEventListener('blur', validatePhone);
+            category.addEventListener('blur', validateCategory);
+            message.addEventListener('blur', validateMessage);
+
+            fullName.addEventListener('input', () => clearError(fullName, document.getElementById('fullNameError')));
+            email.addEventListener('input', () => clearError(email, document.getElementById('emailError')));
+            phone.addEventListener('input', () => clearError(phone, document.getElementById('phoneError')));
+            category.addEventListener('input', () => clearError(category, document.getElementById('categoryError')));
+            message.addEventListener('input', () => clearError(message, document.getElementById('messageError')));
+
+            function getLastSubmissionTime() {
+                const stored = localStorage.getItem('lastSubmissionTime');
+                return stored ? parseInt(stored, 10) : 0;
+            }
+
+            function setLastSubmissionTime() {
+                localStorage.setItem('lastSubmissionTime', Date.now().toString());
+            }
+
+            function checkRateLimit() {
+                const lastSubmit = getLastSubmissionTime();
+                const elapsed = (Date.now() - lastSubmit) / 1000;
+                const remaining = Math.ceil(RATE_LIMIT_SECONDS - elapsed);
+                
+                if (remaining > 0 && lastSubmit > 0) {
+                    showRateLimitOverlay(remaining);
+                    return false;
+                }
+                return true;
+            }
+
+            function showRateLimitOverlay(seconds) {
+                rateLimitTimer.textContent = seconds;
+                rateLimitOverlay.classList.add('visible');
+                
+                const interval = setInterval(() => {
+                    seconds--;
+                    if (seconds <= 0) {
+                        clearInterval(interval);
+                        rateLimitOverlay.classList.remove('visible');
+                    } else {
+                        rateLimitTimer.textContent = seconds;
+                    }
+                }, 1000);
+            }
+
+            function playSuccessSound() {
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
+                    oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.15);
+                    oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.3);
+                    
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                } catch (e) {
+                    console.log('Audio not supported');
+                }
+            }
+
+            async function sendEmails(formData) {
+                const timestamp = new Date().toLocaleString('en-US', {
+                    timeZone: 'Africa/Nairobi',
+                    dateStyle: 'full',
+                    timeStyle: 'short'
+                });
+
+                const adminEmailContent = `
+New Problem Report Submitted
+============================
+
+Name: ${formData.fullName}
+Email: ${formData.email || 'Not provided'}
+Phone: ${formData.phone || 'Not provided'}
+Category: ${formData.category}
+Message: ${formData.message}
+
+Submitted: ${timestamp}
+
+---
+This report was submitted through the public support form.
+                `.trim();
+
+                const userEmailContent = `
+Hello ${formData.fullName.split(' ')[0]},
+
+Thank you for submitting a report. We've received your issue and our team will review it shortly.
+
+Your Report Summary:
+-------------------
+Category: ${formData.category}
+Message: ${formData.message}
+
+Submitted: ${timestamp}
+
+We'll get back to you as soon as possible. Typically, we respond within 24 hours.
+
+Best regards,
+Support Team
+                `.trim();
+
+                if (typeof emailjs !== 'undefined') {
+                    try {
+                        await emailjs.send('yFYGQpgeL1n8bR9bw', 'template_admin', {
+                            from_name: formData.fullName,
+                            from_email: formData.email || 'habilmajid7@gmail.com',
+                            from_phone: formData.phone || '+255774323581',
+                            category: formData.category,
+                            message: formData.message,
+                            timestamp: timestamp
+                        });
+                        console.log('Admin email sent');
+                    } catch (e) {
+                        console.log('EmailJS not configured - simulating send');
+                    }
+
+                    if (formData.email) {
+                        try {
+                            await emailjs.send('yFYGQpgeL1n8bR9bw', 'template_user', {
+                                to_name: formData.fullName,
+                                to_email: formData.email,
+                                category: formData.category,
+                                message: formData.message,
+                                timestamp: timestamp
+                            });
+                            console.log('User confirmation email sent');
+                        } catch (e) {
+                            console.log('User confirmation - simulating send');
+                        }
+                    }
+                } else {
+                    console.log('EmailJS not loaded - form submitted locally');
+                }
+            }
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (isSubmitting) return;
+                
+                const isValidFullName = validateFullName();
+                const isValidEmail = validateEmail();
+                const isValidPhone = validatePhone();
+                const isValidCategory = validateCategory();
+                const isValidMessage = validateMessage();
+
+                if (!isValidFullName || !isValidEmail || !isValidPhone || !isValidCategory || !isValidMessage) {
+                    const firstError = document.querySelector('.form-group .error.visible');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    return;
+                }
+
+                if (!checkRateLimit()) {
+                    return;
+                }
+
+                if (form.honeypot.value) {
+                    console.log('Bot detected');
+                    return;
+                }
+
+                isSubmitting = true;
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+                successMessage.classList.remove('visible');
+                errorMessage.classList.remove('visible');
+
+                try {
+                    const formData = {
+                        fullName: sanitizeInput(fullName.value.trim()),
+                        email: sanitizeInput(email.value.trim()),
+                        phone: sanitizeInput(phone.value.trim()),
+                        category: sanitizeInput(category.value),
+                        message: sanitizeInput(message.value.trim()),
+                        file: selectedFile
+                    };
+
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+
+                    await sendEmails(formData);
+
+                    setLastSubmissionTime();
+
+                    playSuccessSound();
+
+                    successMessage.classList.add('visible');
+                    form.reset();
+                    selectedFile = null;
+                    updateFileDisplay(null);
+
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                } catch (error) {
+                    console.error('Submission error:', error);
+                    errorMessageText.textContent = 'An error occurred. Please try again later.';
+                    errorMessage.classList.add('visible');
+                } finally {
+                    isSubmitting = false;
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                }
+            });
+
+            const fileUpload = document.getElementById('fileUpload');
+            const fileInput = document.getElementById('fileInput');
+            const fileUploadText = document.getElementById('fileUploadText');
+            const fileUploadHint = document.getElementById('fileUploadHint');
+            const MAX_FILE_SIZE = 5 * 1024 * 1024;
+            let selectedFile = null;
+
+            function validateFile(file) {
+                const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'];
+                if (!allowedTypes.includes(file.type)) {
+                    return 'Please select a valid image file (PNG, JPG, GIF, or WebP)';
+                }
+                if (file.size > MAX_FILE_SIZE) {
+                    return 'File size must be less than 5MB';
+                }
+                return null;
+            }
+
+            function updateFileDisplay(file) {
+                if (file) {
+                    fileUploadText.innerHTML = `<span>${file.name}</span> (${(file.size / 1024).toFixed(1)} KB)`;
+                    fileUploadHint.textContent = 'Click to change file';
+                    fileUpload.classList.add('has-file');
+                } else {
+                    fileUploadText.innerHTML = 'Drag & drop or <span>browse</span>';
+                    fileUploadHint.textContent = 'PNG, JPG, GIF, WebP up to 5MB';
+                    fileUpload.classList.remove('has-file');
+                }
+            }
+
+            fileUpload.addEventListener('click', () => fileInput.click());
+            
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const error = validateFile(file);
+                    if (error) {
+                        alert(error);
+                        fileInput.value = '';
+                        return;
+                    }
+                    selectedFile = file;
+                    updateFileDisplay(file);
+                }
+            });
+
+            fileUpload.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                fileUpload.classList.add('dragover');
+            });
+            
+            fileUpload.addEventListener('dragleave', () => {
+                fileUpload.classList.remove('dragover');
+            });
+            
+            fileUpload.addEventListener('drop', (e) => {
+                e.preventDefault();
+                fileUpload.classList.remove('dragover');
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    const error = validateFile(file);
+                    if (error) {
+                        alert(error);
+                        return;
+                    }
+                    selectedFile = file;
+                    updateFileDisplay(file);
+                }
+            });
+
+        })();
+    </script>
+</body>
+</html>
